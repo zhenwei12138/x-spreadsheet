@@ -33,7 +33,13 @@ class CellRange {
     const {
       sri, sci, eri, eci,
     } = this;
-    return sri <= ri && ri <= eri && sci <= ci && ci <= eci;
+    if (isNaN(sci) && isNaN(eci)) {
+      return sri <= ri && ri <= eri;
+    } else if (isNaN(eri) && isNaN(sri)) {
+      return sci <= ci && ci <= eci;
+    } else {
+      return sri <= ri && ri <= eri && sci <= ci && ci <= eci;
+    }
   }
 
   each(cb, rowFilter = () => true) {

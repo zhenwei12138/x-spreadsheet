@@ -5,8 +5,10 @@ import { t } from '../locale/locale';
 const patterns = {
   number: /(^\d+$)|(^\d+(\.\d{0,4})?$)/,
   date: /^\d{4}-\d{1,2}-\d{1,2}$/,
+  row: /^([A-Z])/,
+  colun: /^([1-9][0-9]*)/,
+  cell: /^([A-Z]{1,2}[1-9]\d*)?(:[A-Z]{1,2}[1-9]\d*)?$/
 };
-
 // rule: { required: false, type, pattern: // }
 export default class FormField {
   constructor(input, rule, label, labelWidth) {

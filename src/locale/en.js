@@ -121,6 +121,7 @@ export default {
       date: 'Date',
       phone: 'Phone',
       email: 'Email',
+      unique: 'unique',
     },
     operator: {
       be: 'between',

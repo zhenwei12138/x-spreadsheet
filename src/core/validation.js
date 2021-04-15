@@ -65,6 +65,7 @@ class Validations {
 
   validate(ri, ci, text) {
     const v = this.get(ri, ci);
+    console.log(v);
     const key = `${ri}_${ci}`;
     const { errors } = this;
     if (v !== null) {
@@ -109,6 +110,7 @@ class Validations {
   get(ri, ci) {
     for (let i = 0; i < this._.length; i += 1) {
       const v = this._[i];
+      console.log('v',v);
       if (v.includes(ri, ci)) return v;
     }
     return null;

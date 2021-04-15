@@ -6,6 +6,7 @@ import Button from './button';
 import { t } from '../locale/locale';
 import { h } from './element';
 import { cssPrefix } from '../config';
+import { CellRange } from '../core/cell_range';
 
 const fieldLabelWidth = 100;
 
@@ -13,20 +14,21 @@ export default class ModalValidation extends Modal {
   constructor() {
     const mf = new FormField(
       new FormSelect('cell',
-        ['cell'], // cell|row|column
+        ['cell','row','column'], // cell|row|column
         '100%',
-        it => t(`dataValidation.modeType.${it}`)),
+        it => t(`dataValidation.modeType.${it}`),
+        rf => this.rangeChanged(rf),),
       { required: true },
       `${t('dataValidation.range')}:`,
       fieldLabelWidth,
     );
     const rf = new FormField(
-      new FormInput('120px', 'E3 or E3:F12'),
-      { required: true, pattern: /^([A-Z]{1,2}[1-9]\d*)(:[A-Z]{1,2}[1-9]\d*)?$/ },
+      new FormInput('120px', 'E3 or E3:F12 or E or 3'),
+      { required: true },
     );
     const cf = new FormField(
       new FormSelect('list',
-        ['list', 'number', 'date', 'phone', 'email'],
+        ['list', 'number', 'date', 'phone', 'email', 'unique'],
         '100%',
         it => t(`dataValidation.type.${it}`),
         it => this.criteriaSelected(it)),
@@ -99,8 +101,18 @@ export default class ModalValidation extends Modal {
     vf.input.hint(hint);
     vf.show();
   }
+  rangeChanged(rf_t) {
+    const { mf,rf } = this
+    mf.val(rf_t)
+    if (rf_t === 'row') {
+      rf.val(rf.val().replace(/[A-Z]+/g,''))
+    } else if (rf_t === 'column') {
+      rf.val(rf.val().replace(/\d+/g,''))
+    }
+  }
 
   criteriaSelected(it) {
+    console.log('it',it);
     const {
       of, minvf, maxvf, vf, svf,
     } = this;
@@ -119,6 +131,13 @@ export default class ModalValidation extends Modal {
       maxvf.show();
       vf.hide();
       svf.hide();
+    } else if (it === 'unique') {
+      vf.hide();
+      svf.hide();
+      vf.hide();
+      of.hide();
+      minvf.hide();
+      maxvf.hide();
     } else {
       if (it === 'list') {
         svf.show();
@@ -190,7 +209,7 @@ export default class ModalValidation extends Modal {
         mode,
         ref,
         {
-          type, operator, required: false, value,
+          type, operator, required: true, value,
         });
       this.hide();
     }
@@ -205,10 +224,12 @@ export default class ModalValidation extends Modal {
       const {
         mode, ref, validator,
       } = v;
+      console.log(v);
       const {
         type, operator, value,
       } = validator || { type: 'list' };
-      mf.val(mode || 'cell');
+      const m = mode || 'cell';
+      mf.val(m);
       rf.val(ref);
       cf.val(type);
       of.val(operator);

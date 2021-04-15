@@ -4,6 +4,7 @@ import helper from './helper';
 const rules = {
   phone: /^[1-9]\d{10}$/,
   email: /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/,
+  unique: /^([A-Za-z_#]*$)/,
 };
 
 function returnMessage(flag, key, ...arg) {
@@ -63,6 +64,7 @@ export default class Validator {
     }
     if (/^\s*$/.test(v)) return [true];
     if (rules[type] && !rules[type].test(v)) {
+      console.log('rules',type);
       return returnMessage(false, 'notMatch');
     }
     if (type === 'list') {

@@ -121,6 +121,7 @@ export default {
       date: '日期',
       phone: '手机号',
       email: '电子邮件',
+      unique: '唯一',
     },
     operator: {
       be: '在区间',
