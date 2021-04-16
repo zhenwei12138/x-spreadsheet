@@ -53,10 +53,11 @@ class Validation {
   }
 }
 class Validations {
-  constructor() {
+  constructor(dataValidationEvent) {
     this._ = [];
     // ri_ci: errMessage
     this.errors = new Map();
+    this.dataValidationEvent = dataValidationEvent
   }
 
   getError(ri, ci) {
@@ -70,7 +71,12 @@ class Validations {
     const { errors } = this;
     if (v !== null) {
       const [flag, message] = v.validator.validate(text);
-      if (!flag) {
+      let isErr = !flag
+      if (v.validator.type === 'unique') {
+          const dataValidationRes = this.dataValidationEvent(ri,ci,text,v.validator.type,v.mode)
+          isErr = isErr && dataValidationRes
+      }
+      if (!isErr) {
         errors.set(key, message);
       } else {
         errors.delete(key);
@@ -81,7 +87,7 @@ class Validations {
     return true;
   }
 
-  // type: date|number|phone|email|list
+  // type: date|number|phone|email|list|unique
   // validator: { required, value, operator }
   add(mode, ref, {
     type, required, value, operator,

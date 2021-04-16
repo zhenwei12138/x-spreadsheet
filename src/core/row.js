@@ -63,6 +63,15 @@ class Rows {
   get(ri) {
     return this._[ri];
   }
+  getColData(ci) {
+    let cols = []
+    Object.entries(this._).forEach(([ri, row]) => {
+      if (row !== undefined && row.cells !== undefined && row.cells[ci] !== undefined) {
+        cols.push(row.cells[ci]) 
+      }
+    });
+    return cols    
+  }
 
   getOrNew(ri) {
     this._[ri] = this._[ri] || { cells: {} };

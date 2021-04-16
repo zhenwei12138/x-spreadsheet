@@ -332,7 +332,24 @@ export default class DataProxy {
     this.merges = new Merges(); // [CellRange, ...]
     this.rows = new Rows(this.settings.row);
     this.cols = new Cols(this.settings.col);
-    this.validations = new Validations();
+    const dataValidationEvent = (ri,ci,text,type,mode) => {
+      console.log('unique',ri,ci,text,type,mode);
+      if (type === 'unique') {
+        console.log('unique',ri,ci,text,type,mode);
+        let datas = []
+        if (mode === 'row') {
+          datas = this.rows.get(ri)
+          console.log("rows:",datas);
+        } else if (mode === 'column') {
+          datas = this.rows.getColData(ci)
+          const values = Object.values(datas).map(item => item.text)
+          return values.filter(item => item === text).length === 1
+        }
+        return true
+      }
+    }
+    const validations = new Validations(dataValidationEvent);
+    this.validations = validations;
     this.hyperlinks = {};
     this.comments = {};
     // save data end
